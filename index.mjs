@@ -1,6 +1,6 @@
 import express from "express"
 import pinoHTTP from 'pino-http'
-import logger from "../logger.mjs";
+import logger from "./logger.mjs";
 import  cors  from "cors";
 import { selectSubmissions, selectStories, selectPublishers, selectGenres } from "./selectCalls.mjs";
 
