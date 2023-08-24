@@ -1,6 +1,7 @@
 import express from "express"
 import pinoHTTP from 'pino-http'
 import logger from "./logger.mjs";
+import bodyParser from "body-parser";
 import { newStory } from "./postCalls.mjs";
 import  cors  from "cors";
 import { selectSubmissions, selectStories, selectPublishers, selectGenres } from "./selectCalls.mjs";
@@ -16,6 +17,7 @@ app.use(
       origin: ['http://localhost:5173']
     })
   )
+  app.use(bodyParser.json())
 
 app.get('/api/submissions', async (req,res) => {
     logger.info("submissions request received!")
@@ -46,7 +48,13 @@ app.post('/api/stories', async (req,res) => {
   logger.info("add story request received!")
   res.statusCode = 200
   const data = req.body
-  const result = await newStory(data)
+  logger.trace({data},"BODY")
+  try {
+    const result = await newStory(data)
+    logger.info({result},"INSERTION SUCCESSFUL")
+  } catch (error) {
+    logger.error(error)
+  }  
 })
 
 
