@@ -20,7 +20,6 @@ export const selectGenres = async (db) => {
 }
 
 export const selectStoryGenres = async (db,story) => {
-    
     const storyId = await getStoryId(db,story)  
     let genreIds = await db('stories_genres')
     .select('genre_id')

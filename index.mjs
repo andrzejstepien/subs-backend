@@ -45,7 +45,7 @@ app.get('/api/genres', async (req,res) => {
   const result = await selectGenres(db)
   res.send(result)
 })
-app.get('/api/story-genres', async (rew,res) => {
+app.get('/api/stories-genres', async (rew,res) => {
   logger.info("story-genres request received")
   const data = req.body
   if(!data?.story){
