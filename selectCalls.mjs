@@ -1,23 +1,24 @@
 
+export const selectCleanArray = async (db,table,column) =>{
+    const res = await db(table)
+    .select(column)
+    return res.map(e=>{
+        return e[Object.keys(e)[0]]
+    })
+}
+
+export const selectFull = async (db,table) => {
+    return db(table)
+    .select('*')
+    
+}
+
 export const selectSubmissions = async (db) => {
     return db('submissions')
     .select('*')
 }
 
-export const selectStories = async (db) => {
-    return db('stories')
-    .select('title')
-}
 
-export const selectPublishers = async (db) => {
-    return db('pubs')
-    .select('title')
-}
-
-export const selectGenres = async (db) => {
-    return db('genres')
-    .select('name')
-}
 
 export const selectStoryGenres = async (db,story) => {
     const storyId = await getStoryId(db,story)  
@@ -43,3 +44,7 @@ export const getStoryId = async (db,story) => {
     return res[0].id
 }
 
+export const selectStoriesFull = async (db) => {
+    return db('stories')
+    .select('*')
+}

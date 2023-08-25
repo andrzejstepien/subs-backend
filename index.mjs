@@ -4,7 +4,7 @@ import logger from "./logger.mjs";
 import bodyParser from "body-parser";
 import { newStory } from "./postCalls.mjs";
 import  cors  from "cors";
-import { selectSubmissions, selectStories, selectPublishers, selectGenres, selectStoryGenres } from "./selectCalls.mjs";
+import { selectFull,  selectStoryGenres, selectCleanArray } from "./selectCalls.mjs";
 import { storyExists } from "./existsCalls.mjs";
 import { db } from "./db.mjs";
 
@@ -24,25 +24,31 @@ app.use(
 app.get('/api/submissions', async (req,res) => {
     logger.info("submissions request received!")
     res.statusCode = 200
-    const result = await selectSubmissions(db)
+    const result = await selectFull(db,'submissions')
     res.send(result)
 })
 app.get('/api/stories', async (req,res) => {
-  logger.info("submissions request received!")
+  logger.info("stories request received!")
   res.statusCode = 200
-  const result = await selectStories(db)
+  const result = await selectCleanArray(db,'stories','title')
+  res.send(result)
+})
+app.get('/api/stories/full', async (req,res)=>{
+  logger.info("stories full request received!")
+  res.statusCode = 200
+  const result = await selectFull(db,'stories')
   res.send(result)
 })
 app.get('/api/publishers', async (req,res) => {
   logger.info("publishers request received!")
   res.statusCode = 200
-  const result = await selectPublishers(db)
+  const result = await selectCleanArray(db,'pubs','title')
   res.send(result)
 })
 app.get('/api/genres', async (req,res) => {
   logger.info("genres request received!")
   res.statusCode = 200
-  const result = await selectGenres(db)
+  const result = await selectCleanArray(db,'genres','name')
   res.send(result)
 })
 app.get('/api/stories-genres', async (rew,res) => {
