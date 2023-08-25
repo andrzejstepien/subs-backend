@@ -1,4 +1,4 @@
-
+import logger from "./logger.mjs"
 export const selectCleanArray = async (db,table,column) =>{
     const res = await db(table)
     .select(column)
@@ -10,13 +10,10 @@ export const selectCleanArray = async (db,table,column) =>{
 export const selectFull = async (db,table) => {
     return db(table)
     .select('*')
-    
 }
 
-export const selectSubmissions = async (db) => {
-    return db('submissions')
-    .select('*')
-}
+
+
 
 
 
@@ -34,7 +31,17 @@ export const selectStoryGenres = async (db,story) => {
         .where('id',id)
         return res[0].name
     }))
+}
 
+export const selectAllStoryGenres = async (db) => {
+    const stories = await selectCleanArray(db,'stories','title')
+    logger.trace({stories},"STORIES")
+    const obj = {}
+    for (const story of stories) {
+        obj[story]=[await selectStoryGenres(db,story)]
+    }
+    logger.trace(obj, "selectAllStoryGenres RETURNS")
+    return obj
 }
 
 export const getStoryId = async (db,story) => {
@@ -43,6 +50,8 @@ export const getStoryId = async (db,story) => {
     .where('title',story)
     return res[0].id
 }
+
+
 
 export const selectStoriesFull = async (db) => {
     return db('stories')

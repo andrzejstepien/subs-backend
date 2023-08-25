@@ -4,7 +4,7 @@ import logger from "./logger.mjs";
 import bodyParser from "body-parser";
 import { newStory } from "./postCalls.mjs";
 import  cors  from "cors";
-import { selectFull,  selectStoryGenres, selectCleanArray } from "./selectCalls.mjs";
+import { selectFull,  selectStoryGenres, selectCleanArray, selectAllStoryGenres } from "./selectCalls.mjs";
 import { storyExists } from "./existsCalls.mjs";
 import { db } from "./db.mjs";
 
@@ -51,12 +51,13 @@ app.get('/api/genres', async (req,res) => {
   const result = await selectCleanArray(db,'genres','name')
   res.send(result)
 })
-app.get('/api/stories-genres', async (rew,res) => {
-  logger.info("story-genres request received")
+app.get('/api/stories-genres', async (req,res) => {
+  logger.info("stories-genres request received")
   const data = req.body
   if(!data?.story){
-    res.statusCode = 400
-    res.send("Request must specify a story")
+    res.statusCode = 200
+    const result = await selectAllStoryGenres(db)
+    res.send(result)
   } else if(!await storyExists(data.story)){
     res.statusCode = 400
     res.send("Requested story does not exist!")
