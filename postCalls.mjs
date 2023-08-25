@@ -1,9 +1,8 @@
-import { db } from "./db.mjs";
 import logger from "./logger.mjs";
 
 
 
-export const newStory = async (data) => {
+export const newStory = async (db,data) => {
     logger.trace({ data }, "newStory called!")
     try {
         await db('stories')
