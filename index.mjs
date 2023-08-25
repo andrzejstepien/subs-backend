@@ -4,7 +4,8 @@ import logger from "./logger.mjs";
 import bodyParser from "body-parser";
 import { newStory } from "./postCalls.mjs";
 import  cors  from "cors";
-import { selectSubmissions, selectStories, selectPublishers, selectGenres } from "./selectCalls.mjs";
+import { selectSubmissions, selectStories, selectPublishers, selectGenres, selectStoryGenres } from "./selectCalls.mjs";
+import { storyExists } from "./existsCalls.mjs";
 import { db } from "./db.mjs";
 
 const app = express()
@@ -50,8 +51,13 @@ app.get('/api/story-genres', async (rew,res) => {
   if(!data?.story){
     res.statusCode = 400
     res.send("Request must specify a story")
-  } else if(){
-
+  } else if(!await storyExists(data.story)){
+    res.statusCode = 400
+    res.send("Requested story does not exist!")
+  } else {
+    res.statusCode = 200
+    const result = await selectStoryGenres(db,data.story)
+    res.send(result)
   }
 })
 
