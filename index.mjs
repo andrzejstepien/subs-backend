@@ -3,8 +3,8 @@ import pinoHTTP from 'pino-http'
 import logger from "./logger.mjs";
 import bodyParser from "body-parser";
 import { newStory } from "./postCalls.mjs";
-import  cors  from "cors";
-import { selectFull,  selectStoryGenres, selectCleanArray, selectAllStoryGenres } from "./selectCalls.mjs";
+import cors from "cors";
+import { selectFull, selectStoryGenres, selectCleanArray, selectAllStoryGenres } from "./selectCalls.mjs";
 import { storyExists } from "./existsCalls.mjs";
 import { db } from "./db.mjs";
 
@@ -12,80 +12,89 @@ const app = express()
 const port = 4000
 
 app.use(
-    pinoHTTP({
-      logger,
-    }),
-    cors({
-      origin: ['http://localhost:5173']
-    })
-  )
-  app.use(bodyParser.json())
+  pinoHTTP({
+    logger,
+  }),
+  cors({
+    origin: ['http://localhost:5173']
+  })
+)
+app.use(bodyParser.json())
 
-app.get('/api/submissions', async (req,res) => {
-    logger.info("submissions request received!")
-    res.statusCode = 200
-    const result = await selectFull(db,'submissions')
-    res.send(result)
+app.get('/api/submissions', async (req, res) => {
+  logger.info("submissions request received!")
+  res.statusCode = 200
+  const result = await selectFull(db, 'submissions')
+  res.send(result)
 })
-app.get('/api/stories', async (req,res) => {
+app.get('/api/stories', async (req, res) => {
   logger.info("stories request received!")
   res.statusCode = 200
-  const result = await selectCleanArray(db,'stories','title')
+  const result = await selectCleanArray(db, 'stories', 'title')
   res.send(result)
 })
-app.get('/api/stories/full', async (req,res)=>{
+app.get('/api/stories/full', async (req, res) => {
   logger.info("stories full request received!")
   res.statusCode = 200
-  const result = await selectFull(db,'stories')
+  const result = await selectFull(db, 'stories')
   res.send(result)
 })
-app.get('/api/publishers', async (req,res) => {
+app.get('/api/publishers', async (req, res) => {
   logger.info("publishers request received!")
   res.statusCode = 200
-  const result = await selectCleanArray(db,'pubs','title')
+  const result = await selectCleanArray(db, 'pubs', 'title')
   res.send(result)
 })
-app.get('/api/genres', async (req,res) => {
+app.get('/api/genres', async (req, res) => {
   logger.info("genres request received!")
   res.statusCode = 200
-  const result = await selectCleanArray(db,'genres','name')
+  const result = await selectCleanArray(db, 'genres', 'name')
   res.send(result)
 })
-app.get('/api/stories-genres', async (req,res) => {
+app.get('/api/stories-genres', async (req, res) => {
   logger.info("stories-genres request received")
   const data = req.body
-  if(!data?.story){
-    res.statusCode = 200
-    const result = await selectAllStoryGenres(db)
-    res.send(result)
-  } else if(!await storyExists(data.story)){
-    res.statusCode = 400
-    res.send("Requested story does not exist!")
+  if (!data?.story) {
+    try {
+      res.statusCode = 200
+      const result = await selectAllStoryGenres(db)
+      res.send(result)
+    } catch (error) {
+      logger.error(error)
+      res.statusCode = 400
+      res.send("No can do!")
+    }
   } else {
-    res.statusCode = 200
-    const result = await selectStoryGenres(db,data.story)
-    res.send(result)
+    try {
+      res.statusCode = 200
+      const result = await selectStoryGenres(db, data.story)
+      res.send(result)
+    } catch (error) {
+      logger.error(error)
+      res.send("No can do! Does the story exist?")
+    }
+    
   }
 })
 
-app.post('/api/stories', async (req,res) => {
+app.post('/api/stories', async (req, res) => {
   logger.info("add story request received!")
   res.statusCode = 200
   const data = req.body
-  logger.trace({data},"BODY")
+  logger.trace({ data }, "BODY")
   try {
-    const result = await newStory(db,data)
-    logger.info({result},"INSERTION SUCCESSFUL")
+    const result = await newStory(db, data)
+    logger.info({ result }, "INSERTION SUCCESSFUL")
   } catch (error) {
     logger.error(error)
-  }  
+  }
 })
 
 
 
 
 
-app.listen(port, (err)=>{
-    if (err) logger.error(err);
-    logger.info("Server listening on PORT " + port)
+app.listen(port, (err) => {
+  if (err) logger.error(err);
+  logger.info("Server listening on PORT " + port)
 })
