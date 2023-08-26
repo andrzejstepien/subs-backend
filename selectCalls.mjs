@@ -22,6 +22,7 @@ export const selectStoryGenres = async (db,story) => {
     let genreIds = await db('stories_genres')
     .select('genre_id')
     .where('story_id',storyId)
+    if(genreIds===[]){return []}
     genreIds = genreIds.map(e=>{
         return e.genre_id
     })
@@ -35,12 +36,11 @@ export const selectStoryGenres = async (db,story) => {
 
 export const selectAllStoryGenres = async (db) => {
     const stories = await selectCleanArray(db,'stories','title')
-    logger.trace({stories},"STORIES")
     const obj = {}
     for (const story of stories) {
-        obj[story]=[await selectStoryGenres(db,story)]
+        const genres = await selectStoryGenres(db,story)
+        obj[story]=[genres][0]
     }
-    logger.trace(obj, "selectAllStoryGenres RETURNS")
     return obj
 }
 
@@ -48,7 +48,8 @@ export const getStoryId = async (db,story) => {
     const res = await db('stories')
     .select('id')
     .where('title',story)
-    return res[0].id
+    if(res==[]){throw new Error("story title not recognised")}
+    return res[0]?.id 
 }
 
 
