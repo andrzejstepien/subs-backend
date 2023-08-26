@@ -4,7 +4,7 @@
   "description": "server to connect subs-frontend to short fiction submissions database",
   "main": "index.mjs",
   "scripts": {
-    "test": "test"
+    "test": "mocha"
   },
   "dependencies": {
     "body-parser": "^1.20.2",
