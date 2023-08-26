@@ -4,7 +4,7 @@ import logger from "./logger.mjs";
 import bodyParser from "body-parser";
 import { newStory } from "./postCalls.mjs";
 import cors from "cors";
-import { selectFull, selectStoryGenres, selectCleanArray, selectAllStoryGenres } from "./selectCalls.mjs";
+import { selectFull, selectStoryGenres, selectCleanArray, selectAllStoryGenres, getStoriesPageData, getSingleStoryPageData } from "./selectCalls.mjs";
 import { storyExists } from "./existsCalls.mjs";
 import { db } from "./db.mjs";
 
@@ -76,6 +76,33 @@ app.get('/api/stories-genres', async (req, res) => {
     
   }
 })
+
+app.get('/api/page/stories', async (req,res) => {
+  logger.info("stories page data request received!")
+  res.statusCode = 200
+  const result = await getStoriesPageData(db)
+  res.send(result)
+})
+app.get('/api/page/single-story', async (req,res) => {
+  const data = req.query
+  logger.info({req},"stories page data request received!")
+  if(!data.title){
+    logger.warn("BAD REQUEST: no story title!")
+    res.sendStatus(400)
+  }else{
+    try {
+      const result = await getSingleStoryPageData(db,data.title)
+      res.statusCode = 200
+      res.send(result)
+    } catch (error) {
+      logger.error(error)
+    }
+    
+    
+  }
+  
+})
+
 
 app.post('/api/stories', async (req, res) => {
   logger.info("add story request received!")

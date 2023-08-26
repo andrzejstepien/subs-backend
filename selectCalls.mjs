@@ -7,6 +7,13 @@ export const selectCleanArray = async (db,table,column) =>{
     })
 }
 
+export const selectRowByColumn = async (db,table,column,value) => {
+    const res = await db(table)
+    .select('*')
+    .where(column,value)
+    return res[0]
+}
+
 export const selectFull = async (db,table) => {
     return db(table)
     .select('*')
@@ -67,4 +74,14 @@ export const getStoriesPageData = async (db) => {
         row.Genres = storiesGenres[row.Title]
         return row
     })
+}
+
+export const getSingleStoryPageData = async (db,title) => {
+    let res = await db('stories')
+    .select('id as ID','title as Title')
+    .where('title',title)
+    res = res[0]
+    const genres = await selectStoryGenres(db,title)
+    res.Genres = genres
+    return res
 }

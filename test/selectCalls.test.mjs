@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { describe } from "mocha";
 import { db } from "../db.mjs"
-import { selectCleanArray, selectStoryGenres, selectAllStoryGenres, getStoryId, getStoriesPageData } from "../selectCalls.mjs";
+import { selectCleanArray, selectStoryGenres, selectAllStoryGenres, getStoryId, getStoriesPageData, getSingleStoryPageData } from "../selectCalls.mjs";
 import { getArrayDepth } from "./testingHelperFunctions.mjs";
 import logger from "../logger.mjs";
 
@@ -106,6 +106,21 @@ describe('Testing select calls...', function () {
             expect(res.Genres.length).to.equal(3)
         })
 
+    })
+
+    describe("Testing getSingleStoryPageData()...", function (){
+        it('returns an object', async function(){
+            let res = await getSingleStoryPageData(db,'Drag')
+            expect(res).to.be.a('object')
+        })
+        it('there is a key called "Title"', async function () {
+            let res = await getSingleStoryPageData(db,'Drag')
+            expect(res.Title).to.exist
+        })
+        it('res.Genres is an array', async function () {
+            let res = await getSingleStoryPageData(db,'Drag')
+            expect(res.Genres).to.be.a('array')
+        })
     })
 
 
