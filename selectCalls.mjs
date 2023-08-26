@@ -58,3 +58,13 @@ export const selectStoriesFull = async (db) => {
     return db('stories')
     .select('*')
 }
+
+export const getStoriesPageData = async (db) => {
+    const storiesData = await db('stories')
+    .select('id as ID','title as Title','word_count as Wordcount')
+    const storiesGenres = await selectAllStoryGenres(db)
+    return storiesData.map(row=>{
+        row.Genres = storiesGenres[row.Title]
+        return row
+    })
+}
