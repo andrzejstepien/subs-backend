@@ -4,7 +4,7 @@ import logger from "./logger.mjs";
 import bodyParser from "body-parser";
 import { newStory } from "./postCalls.mjs";
 import cors from "cors";
-import { selectFull, selectStoryGenres, selectCleanArray, selectAllStoryGenres, getStoriesPageData, getSingleStoryPageData } from "./selectCalls.mjs";
+import { selectFull, selectEntityGenres, selectAllEntityGenres, selectCleanArray, getStoriesPageData, getSingleStoryPageData } from "./selectCalls.mjs";
 import { storyExists } from "./existsCalls.mjs";
 import { db } from "./db.mjs";
 
@@ -57,7 +57,7 @@ app.get('/api/stories-genres', async (req, res) => {
   if (!data?.story) {
     try {
       res.statusCode = 200
-      const result = await selectAllStoryGenres(db)
+      const result = await selectAllEntityGenres(db,'stories')
       res.send(result)
     } catch (error) {
       logger.error(error)
@@ -67,7 +67,7 @@ app.get('/api/stories-genres', async (req, res) => {
   } else {
     try {
       res.statusCode = 200
-      const result = await selectStoryGenres(db, data.story)
+      const result = await selectEntityGenres(db, 'stories',data.story)
       res.send(result)
     } catch (error) {
       logger.error(error)

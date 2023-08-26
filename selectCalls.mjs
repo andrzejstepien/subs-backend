@@ -22,35 +22,6 @@ export const selectFull = async (db,table) => {
 
 
 
-
-
-export const selectStoryGenres = async (db,story) => {
-    const storyId = await getStoryId(db,story)  
-    let genreIds = await db('stories_genres')
-    .select('genre_id')
-    .where('story_id',storyId)
-    if(genreIds===[]){return []}
-    genreIds = genreIds.map(e=>{
-        return e.genre_id
-    })
-    return Promise.all(genreIds.map(async id=>{
-        const res = await db('genres')
-        .select('name')
-        .where('id',id)
-        return res[0].name
-    }))
-}
-
-export const selectAllStoryGenres = async (db) => {
-    const stories = await selectCleanArray(db,'stories','title')
-    const obj = {}
-    for (const story of stories) {
-        const genres = await selectStoryGenres(db,story)
-        obj[story]=[genres][0]
-    }
-    return obj
-}
-
 export const getStoryId = async (db,story) => {
     const res = await db('stories')
     .select('id')
@@ -69,7 +40,7 @@ export const getSubmissionsByStory = async (db,title) => {
 export const getStoriesPageData = async (db) => {
     const storiesData = await db('stories')
     .select('id as ID','title as Title','word_count as Wordcount')
-    const storiesGenres = await selectAllStoryGenres(db)
+    const storiesGenres = await selectAllEntityGenres(db,'stories')
     return Promise.all(storiesData.map(async row=>{
         row.Submissions = await getSubmissionsByStory(db,row.Title)
         row.Genres = storiesGenres[row.Title]
@@ -82,7 +53,50 @@ export const getSingleStoryPageData = async (db,title) => {
     .select('id as ID','title as Title')
     .where('title',title)
     res = res[0]
-    const genres = await selectStoryGenres(db,title)
+    const genres = await selectEntityGenres(db,'stories',title)
     res.Genres = genres
     return res
+}
+
+export const getPublicationsPageData = async (db,title) => {
+    const publicationsData = db('pubs')
+    .select('id as ID', 'title as Title', 'link as Website')
+    const publicationsGenres = 0
+}
+
+export const selectAllEntityGenres = async (db,table) => {
+    const titles = await selectCleanArray(db,table,'title')
+    const obj = {}
+    for (const title of titles) {
+        const genres = await selectEntityGenres(db,table,title)
+        obj[title]=[genres][0]
+    }
+    return obj
+}
+
+export const selectEntityGenres = async (db,table,title) => {
+    const entityId = await getEntityId(db,table,title)  
+    const id = table === 'stories' ? 'story_id' : table === 'pubs' ? 'pub_id' : null
+    if(!id){throw new Error("table must be stories or pubs")}
+    let genreIds = await db(`${table}_genres`)
+    .select('genre_id')
+    .where(id,entityId)
+    if(genreIds.length===0){return []}
+    genreIds = genreIds.map(e=>{
+        return e.genre_id
+    })
+    return Promise.all(genreIds.map(async id=>{
+        const res = await db('genres')
+        .select('name')
+        .where('id',id)
+        return res[0].name
+    }))
+}
+
+export const getEntityId = async (db,table,title) => {
+    const res = await db(table)
+    .select('id')
+    .where('title',title)
+    if(res==[]){throw new Error("title not recognised")}
+    return res[0]?.id 
 }
