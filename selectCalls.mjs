@@ -60,20 +60,21 @@ export const getStoryId = async (db,story) => {
 }
 
 
-
-export const selectStoriesFull = async (db) => {
-    return db('stories')
-    .select('*')
+export const getSubmissionsByStory = async (db,title) => {
+    return db('submissions')
+    .where('Story',title)
 }
+
 
 export const getStoriesPageData = async (db) => {
     const storiesData = await db('stories')
     .select('id as ID','title as Title','word_count as Wordcount')
     const storiesGenres = await selectAllStoryGenres(db)
-    return storiesData.map(row=>{
+    return Promise.all(storiesData.map(async row=>{
+        row.Submissions = await getSubmissionsByStory(db,row.Title)
         row.Genres = storiesGenres[row.Title]
         return row
-    })
+    }))
 }
 
 export const getSingleStoryPageData = async (db,title) => {
