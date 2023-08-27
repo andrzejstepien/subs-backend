@@ -36,6 +36,11 @@ export const getSubmissionsByStory = async (db,title) => {
     .where('Story',title)
 }
 
+export const getSubmissionsByPub = async (db,title) => {
+    return db('submissions')
+    .where('Publication',title)
+}
+
 
 export const getStoriesPageData = async (db) => {
     const storiesData = await db('stories')
@@ -58,10 +63,15 @@ export const getSingleStoryPageData = async (db,title) => {
     return res
 }
 
-export const getPublicationsPageData = async (db,title) => {
-    const publicationsData = db('pubs')
-    .select('id as ID', 'title as Title', 'link as Website')
-    const publicationsGenres = 0
+export const getPublicationsPageData = async (db) => {
+    const storiesData = await db('pubs')
+    .select('id as ID','title as Title', 'link as Website')
+    const pubsGenres = await selectAllEntityGenres(db,'pubs')
+    return Promise.all(storiesData.map(async row=>{
+        row.Submissions = await getSubmissionsByPub(db,row.Title)
+        row.Genres = pubsGenres[row.Title]
+        return row
+    }))
 }
 
 export const selectAllEntityGenres = async (db,table) => {

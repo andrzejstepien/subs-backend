@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { describe } from "mocha";
 import { db } from "../db.mjs";
-import { getEntityId, selectEntityGenres, selectAllEntityGenres, selectCleanArray, getStoryId, getStoriesPageData, getSingleStoryPageData } from "../selectCalls.mjs";
+import { getEntityId, selectEntityGenres, selectAllEntityGenres, selectCleanArray, getStoryId, getStoriesPageData, getSingleStoryPageData, getPublicationsPageData } from "../selectCalls.mjs";
 import { getArrayDepth } from "./testingHelperFunctions.mjs";
 import logger from "../logger.mjs";
 
@@ -156,6 +156,42 @@ describe('Testing select calls...', function () {
             let res = await getSingleStoryPageData(db, 'Drag')
             expect(res.Genres).to.be.a('array')
         })
+    })
+
+    describe('Testing getPublicationsPageData()', function () {
+        it("returns an array", async function () {
+            const res = await getPublicationsPageData(db)
+            expect(res).to.be.a('array')
+        })
+        it("every element of array is an obj", async function () {
+            let res = await getPublicationsPageData(db)
+            res = res.every(e => { return e != null && typeof e === 'object' })
+            expect(res).to.equal(true)
+        })
+        it('result[0].Genres is an array', async function () {
+            let res = await getPublicationsPageData(db)
+            expect(res[0].Genres).to.be.a('array')
+        })
+
+        it('there is a key called "Title"', async function () {
+            let res = await getPublicationsPageData(db)
+            expect(res[0].Title).to.exist
+        })
+        it('there is a key called "Website"', async function () {
+            let res = await getPublicationsPageData(db)
+            expect(res[0].Website).to.exist
+        })
+        it('the object with Title: "The Dark Magazine" should have the pair Genres:["horror"]', async function () {
+            let res = await getPublicationsPageData(db)
+            res = res.find(e => { return e.Title === "The Dark Magazine" })
+            expect(res.Genres[0]).to.equal('horror')
+        })
+        it('the object with Title: "Apex" should have Genres with an array of length 3', async function () {
+            let res = await getPublicationsPageData(db)
+            res = res.find(e => { return e.Title === 'Apex' })
+            expect(res.Genres.length).to.equal(3)
+        })
+
     })
 
 })

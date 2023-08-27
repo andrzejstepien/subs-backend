@@ -45,6 +45,7 @@ describe("Testing API", () => {
                     expect(res.body.every(e=>{return e.Title})).to.equal(true)
                 })
         })
+        
         it('each array item should have a .Genres key and it should yield an array', () => {
             chai.request(server)
                 .get('/api/page/stories')
@@ -53,6 +54,32 @@ describe("Testing API", () => {
                 })
         })
         
+    })
+
+    describe("/GET /api/page/pubs", () => {
+        it('it should GET all pub page data', () => {
+            chai.request(server)
+                .get('/api/page/pubs')
+                .end((err, res) => {
+                    expect(res).to.have.status(200)
+                    expect(res.body).to.be.a('array')
+                    expect(res.body.length).to.equal(32)
+                })
+        })
+        it('each array item should be an object with a .Title key', () => {
+            chai.request(server)
+                .get('/api/page/pubs')
+                .end((err, res) => {
+                    expect(res.body.every(e=>{return e.Title})).to.equal(true)
+                })
+        })
+        it('each array item should have a .Genres key and it should yield an array', () => {
+            chai.request(server)
+                .get('/api/page/pubs')
+                .end((err, res) => {
+                    expect(res.body.every(e=>{return Array.isArray(e.Genres)})).to.equal(true)
+                })
+        })
     })
 
 

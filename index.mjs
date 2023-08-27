@@ -4,7 +4,7 @@ import logger from "./logger.mjs";
 import bodyParser from "body-parser";
 import { newStory } from "./postCalls.mjs";
 import cors from "cors";
-import { selectFull, selectEntityGenres, selectAllEntityGenres, selectCleanArray, getStoriesPageData, getSingleStoryPageData } from "./selectCalls.mjs";
+import { selectFull, selectEntityGenres, selectAllEntityGenres, selectCleanArray, getStoriesPageData, getSingleStoryPageData, getPublicationsPageData } from "./selectCalls.mjs";
 import { storyExists } from "./existsCalls.mjs";
 import { db } from "./db.mjs";
 
@@ -81,6 +81,12 @@ app.get('/api/page/stories', async (req,res) => {
   logger.info("stories page data request received!")
   res.statusCode = 200
   const result = await getStoriesPageData(db)
+  res.send(result)
+})
+app.get('/api/page/pubs', async (req,res) => {
+  logger.info("stories page data request received!")
+  res.statusCode = 200
+  const result = await getPublicationsPageData(db)
   res.send(result)
 })
 app.get('/api/page/single-story', async (req,res) => {
