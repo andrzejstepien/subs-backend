@@ -125,3 +125,6 @@ app.listen(port, (err) => {
   if (err) logger.error(err);
   logger.info("Server listening on PORT " + port)
 })
+
+
+export default app
