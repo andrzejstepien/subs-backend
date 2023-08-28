@@ -115,7 +115,8 @@ export const getFormOptions = async (db) => {
     return {
         stories:await selectCleanArray(db,'stories','title'),
         pubs:await selectCleanArray(db,'pubs','title'),
-        genres:await selectCleanArray(db,'genres','name')
+        genres:await selectCleanArray(db,'genres','name'),
+        responses:await selectCleanArray(db,'responses','response')
     }
 
 }
