@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { describe } from "mocha";
 import { db } from "../db.mjs";
-import { getEntityId, selectEntityGenres, selectAllEntityGenres, selectCleanArray, getStoryId, getStoriesPageData, getSingleStoryPageData, getPublicationsPageData } from "../selectCalls.mjs";
+import { getEntityId, getFormOptions, selectEntityGenres, selectAllEntityGenres, selectCleanArray, getStoryId, getStoriesPageData, getSingleStoryPageData, getPublicationsPageData } from "../selectCalls.mjs";
 import { getArrayDepth } from "./testingHelperFunctions.mjs";
 import logger from "../logger.mjs";
 
@@ -192,6 +192,29 @@ describe('Testing select calls...', function () {
             expect(res.Genres.length).to.equal(3)
         })
 
+    })
+
+    describe("Testing getFormOptions()...", function () {
+        it('returns an object', async function () {
+            let res = await getFormOptions(db)
+            expect(res).to.be.a('object')
+        })
+        it('there is a key called "stories"', async function () {
+            let res = await getFormOptions(db)
+            expect(res?.stories).to.exist
+        })
+        it('.stories is an array', async function () {
+            let res = await getFormOptions(db)
+            expect(res?.stories).to.be.a('array')
+        })
+        it('there is a key called "pubs"', async function () {
+            let res = await getFormOptions(db)
+            expect(res?.pubs).to.exist
+        })
+        it('.pubs is an array', async function () {
+            let res = await getFormOptions(db)
+            expect(res?.pubs).to.be.a('array')
+        })
     })
 
 })

@@ -110,3 +110,11 @@ export const getEntityId = async (db,table,title) => {
     if(res==[]){throw new Error("title not recognised")}
     return res[0]?.id 
 }
+
+export const getFormOptions = async (db) => {
+    return {
+        stories:await selectCleanArray(db,'stories','title'),
+        pubs:await selectCleanArray(db,'pubs','title')
+    }
+
+}

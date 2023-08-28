@@ -4,8 +4,8 @@ import logger from "./logger.mjs";
 import bodyParser from "body-parser";
 import { newStory } from "./postCalls.mjs";
 import cors from "cors";
-import { selectFull, selectEntityGenres, selectAllEntityGenres, selectCleanArray, getStoriesPageData, getSingleStoryPageData, getPublicationsPageData } from "./selectCalls.mjs";
-import { storyExists } from "./existsCalls.mjs";
+import { selectFull, getFormOptions, selectEntityGenres, selectAllEntityGenres, selectCleanArray, getStoriesPageData, getSingleStoryPageData, getPublicationsPageData } from "./selectCalls.mjs";
+import start from "./start.mjs";
 import { db } from "./db.mjs";
 
 const app = express()
@@ -33,6 +33,19 @@ app.get('/api/stories', async (req, res) => {
   const result = await selectCleanArray(db, 'stories', 'title')
   res.send(result)
 })
+
+app.get('/api/formOptions', async (req,res)=>{
+  logger.info('formOptions request received!')
+  try {
+    const result = await getFormOptions(db)
+    res.statusCode=200
+    res.send(result)
+  } catch (error) {
+    logger.error(error)
+    res.sendStatus(500)
+  }
+})
+
 app.get('/api/stories/full', async (req, res) => {
   logger.info("stories full request received!")
   res.statusCode = 200
@@ -110,6 +123,7 @@ app.get('/api/page/single-story', async (req,res) => {
 })
 
 
+
 app.post('/api/stories', async (req, res) => {
   logger.info("add story request received!")
   res.statusCode = 200
@@ -126,7 +140,7 @@ app.post('/api/stories', async (req, res) => {
 
 
 
-
+start(db)
 app.listen(port, (err) => {
   if (err) logger.error(err);
   logger.info("Server listening on PORT " + port)
