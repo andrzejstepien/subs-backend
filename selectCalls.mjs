@@ -114,7 +114,8 @@ export const getEntityId = async (db,table,title) => {
 export const getFormOptions = async (db) => {
     return {
         stories:await selectCleanArray(db,'stories','title'),
-        pubs:await selectCleanArray(db,'pubs','title')
+        pubs:await selectCleanArray(db,'pubs','title'),
+        genres:await selectCleanArray(db,'genres','name')
     }
 
 }

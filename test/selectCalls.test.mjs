@@ -215,6 +215,14 @@ describe('Testing select calls...', function () {
             let res = await getFormOptions(db)
             expect(res?.pubs).to.be.a('array')
         })
+        it('there is a key called "genres"', async function () {
+            let res = await getFormOptions(db)
+            expect(res?.genres).to.exist
+        })
+        it('.genres is an array', async function () {
+            let res = await getFormOptions(db)
+            expect(res?.genres).to.be.a('array')
+        })
     })
 
 })
