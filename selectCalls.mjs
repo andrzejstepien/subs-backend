@@ -116,7 +116,28 @@ export const getFormOptions = async (db) => {
         stories:await selectCleanArray(db,'stories','title'),
         pubs:await selectCleanArray(db,'pubs','title'),
         genres:await selectCleanArray(db,'genres','name'),
-        responses:await selectCleanArray(db,'responses','response')
+        responses:await selectCleanArray(db,'responses','response'),
     }
 
+}
+
+export const getIdsTable = async (db) => {
+    const [story,pub,response] = [{},{},{}]
+    const stories = await selectFull(db,'stories')
+    for (const row of stories) {
+        story[row.title]=row.id
+    }
+    const pubs = await selectFull(db,'pubs')
+    for (const row of pubs) {
+        pub[row.title]=row.id
+    }
+    const responses = await selectFull(db,'responses')
+    for (const row of responses) {
+        response[row.response]=row.id
+    }
+    return{
+        story,
+        pub,
+        response
+    }
 }

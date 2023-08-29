@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { describe } from "mocha";
 import { db } from "../db.mjs";
-import { getEntityId, getFormOptions, selectEntityGenres, selectAllEntityGenres, selectCleanArray, getStoryId, getStoriesPageData, getSingleStoryPageData, getPublicationsPageData } from "../selectCalls.mjs";
+import { getIdsTable, getEntityId, getFormOptions, selectEntityGenres, selectAllEntityGenres, selectCleanArray, getStoryId, getStoriesPageData, getSingleStoryPageData, getPublicationsPageData } from "../selectCalls.mjs";
 import { getArrayDepth } from "./testingHelperFunctions.mjs";
 import logger from "../logger.mjs";
 
@@ -230,6 +230,37 @@ describe('Testing select calls...', function () {
         it('.responses is an array', async function () {
             let res = await getFormOptions(db)
             expect(res?.responses).to.be.a('array')
+        })
+    })
+
+    describe("testing getIdsTable", async ()=>{
+        it("should return an object", async ()=>{
+            let res = await getIdsTable(db)
+            expect(res).to.be.a('object')
+        })
+        it("there should be a .story.Drag key", async()=>{
+            let res = await getIdsTable(db)
+            expect(res?.story.Drag).to.exist
+        })
+        it("there should be a .pub.Apex key", async()=>{
+            let res = await getIdsTable(db)
+            expect(res?.pub.Apex).to.exist
+        })
+        it("there should be a .response.Pending key", async()=>{
+            let res = await getIdsTable(db)
+            expect(res?.response.Pending).to.exist
+        })
+        it(".story.Drag should equal 6", async()=>{
+            let res = await getIdsTable(db)
+            expect(res?.story.Drag).to.equal(6)
+        })
+        it(".response.Pending should equal 6", async()=>{
+            let res = await getIdsTable(db)
+            expect(res?.response.Pending).to.equal(6)
+        })
+        it(".pub.Apex should equal 1", async()=>{
+            let res = await getIdsTable(db)
+            expect(res?.pub.Apex).to.equal(1)
         })
     })
 

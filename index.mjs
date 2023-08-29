@@ -4,7 +4,7 @@ import logger from "./logger.mjs";
 import bodyParser from "body-parser";
 import { newStory } from "./postCalls.mjs";
 import cors from "cors";
-import { selectFull, getFormOptions, selectEntityGenres, selectAllEntityGenres, selectCleanArray, getStoriesPageData, getSingleStoryPageData, getPublicationsPageData } from "./selectCalls.mjs";
+import { getIdsTable, selectFull, getFormOptions, selectEntityGenres, selectAllEntityGenres, selectCleanArray, getStoriesPageData, getSingleStoryPageData, getPublicationsPageData } from "./selectCalls.mjs";
 import start from "./start.mjs";
 import { db } from "./db.mjs";
 
@@ -38,6 +38,16 @@ app.get('/api/formOptions', async (req,res)=>{
   logger.info('formOptions request received!')
   try {
     const result = await getFormOptions(db)
+    res.statusCode=200
+    res.send(result)
+  } catch (error) {
+    logger.error(error)
+    res.sendStatus(500)
+  }
+})
+app.get('/api/idsTable', async (req,res)=>{
+  try {
+    const result = await getIdsTable(db)
     res.statusCode=200
     res.send(result)
   } catch (error) {
@@ -124,7 +134,7 @@ app.get('/api/page/single-story', async (req,res) => {
 
 
 
-app.post('/api/stories', async (req, res) => {
+app.post('/api/story', async (req, res) => {
   logger.info("add story request received!")
   res.statusCode = 200
   const data = req.body
