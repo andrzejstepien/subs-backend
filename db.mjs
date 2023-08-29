@@ -7,3 +7,11 @@ export const db = knex({
     },
     useNullAsDefault: true
   })
+
+  export const testDb = knex({
+    client: 'sqlite3', 
+    connection: {
+      filename: "./test.db"
+    },
+    useNullAsDefault: true
+  })

@@ -5,6 +5,7 @@ import bodyParser from "body-parser";
 import { newStory } from "./postCalls.mjs";
 import cors from "cors";
 import { getIdsTable, selectFull, getFormOptions, selectEntityGenres, selectAllEntityGenres, selectCleanArray, getStoriesPageData, getSingleStoryPageData, getPublicationsPageData } from "./selectCalls.mjs";
+import editSubmission from "./editSubmission.mjs";
 import start from "./start.mjs";
 import { db } from "./db.mjs";
 
@@ -144,6 +145,17 @@ app.post('/api/story', async (req, res) => {
     logger.info({ result }, "INSERTION SUCCESSFUL")
   } catch (error) {
     logger.error(error)
+  }
+})
+app.post('/api/submission/edit', async (req,res)=>{
+  logger.info({data:req.body},"submission edit request received!")
+  try {
+    editSubmission(db,req.body)
+    res.sendStatus(200)
+  } catch (error) {
+    if(error instanceof TypeError){
+      res.sendStatus(400)
+    }else{res.sendStatus(500)}
   }
 })
 
