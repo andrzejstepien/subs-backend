@@ -144,14 +144,14 @@
 //         })
 //     })
 
-    const goodData = {
-        id: 10,
-        story_id: 2,
-        pub_id: 8,
-        date_submitted: '2023-03-06',
-        date_responded: '2023-06-04',
-        response_id: 1
-    }
+//     const goodData = {
+//         id: 10,
+//         story_id: 2,
+//         pub_id: 8,
+//         date_submitted: '2023-03-06',
+//         date_responded: '2023-06-04',
+//         response_id: 1
+//     }
 
 //     describe("POST submission/edit", () => {
 //         describe("Data validation..", () => {

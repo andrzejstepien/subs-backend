@@ -150,7 +150,7 @@ app.post('/api/story', async (req, res) => {
 app.post('/api/submission/edit', async (req,res)=>{
   logger.info({data:req.body},"submission edit request received!")
   try {
-    editSubmission(db,req.body)
+    await editSubmission(db,req.body)
     res.sendStatus(200)
   } catch (error) {
     if(error instanceof TypeError){

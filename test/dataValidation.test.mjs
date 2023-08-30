@@ -36,10 +36,15 @@ describe("Testing data validation functions...", ()=>{
             expect(dateStringIsValid('2023-06-04')).to.equal(true)
             done()
         })
+        it("should return true when passed null", (done)=>{
+            expect(dateStringIsValid(null)).to.equal(true)
+            done()
+        })
         it("should throw an error when passed an invalid date", (done)=>{
             expect(()=>{dateStringIsValid('01-01-1999')}).to.throw('date invalid')
             done()
         })
+        
     
     })
 })
