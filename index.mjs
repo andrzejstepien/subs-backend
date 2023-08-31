@@ -5,7 +5,7 @@ import bodyParser from "body-parser";
 import { newStory } from "./postCalls.mjs";
 import cors from "cors";
 import { getIdsTable, selectFull, getFormOptions, selectEntityGenres, selectAllEntityGenres, selectCleanArray, getStoriesPageData, getSingleStoryPageData, getPublicationsPageData } from "./selectCalls.mjs";
-import editSubmission from "./editSubmission.mjs";
+import { editSubmission, newSubmission } from "./apiObjects/Submission.mjs";
 import start from "./start.mjs";
 import { db } from "./db.mjs";
 
@@ -158,7 +158,18 @@ app.post('/api/submission/edit', async (req,res)=>{
     }else{res.sendStatus(500)}
   }
 })
-
+app.post('/api/submission/new', async (req,res) => {
+  logger.info({data:req.body},"submission new request received!")
+  try {
+     await newSubmission(db,req.body)
+     res.sendStatus(200)
+  } catch (error) {
+    logger.error(error)
+    if(error instanceof Error){
+      res.sendStatus(400)
+    }else{res.sendStatus(500)}
+  }
+})
 
 
 

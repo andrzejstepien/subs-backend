@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { describe } from "mocha";
 import { testDb as db } from "../db.mjs";
-import editSubmission from "../editSubmission.mjs";
+import { editSubmission } from "../apiObjects/Submission.mjs";
 
 const goodData = {
     id: 10,
