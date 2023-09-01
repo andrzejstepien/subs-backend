@@ -1,5 +1,6 @@
 import logger from "../logger.mjs"
 import { isNumber,isString } from "../dataValidation.mjs"
+import { selectEntityGenres } from "../selectCalls.mjs"
 
 
 export const newStory = async (db,data) => {
@@ -56,19 +57,20 @@ export const editStory = async (db,rawData) => {
             title:data.title,
             word_count:data.word_count
         })
+        await db('stories_genres')
+        .where('story_id',data.id)
+        .delete()
         delete data.title
         delete data.word_count
         delete data.id
-        const keys = Object.keys(data)
-        for (const key of keys) {
+        const genres = Object.keys(data)
+        for (const key of genres) {
             if (data[key]) {
-                logger.trace(`genre name: ${key}`)
                 let genre_id =
                     await db('genres')
                         .select('id')
                         .where('name', key)
                 genre_id = genre_id[0].id
-                logger.trace(genre_id)
                 await db('stories_genres')
                     .insert({
                         story_id,
