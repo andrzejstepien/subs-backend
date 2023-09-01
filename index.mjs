@@ -142,8 +142,9 @@ app.post('/api/story/new', async (req, res) => {
   logger.trace({ data }, "BODY")
   try {
     const result = await newStory(db, data)
-    logger.info({ result }, "INSERTION SUCCESSFUL")
+    res.sendStatus(200)
   } catch (error) {
+    res.sendStatus(500)
     logger.error(error)
   }
 })
