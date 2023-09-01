@@ -9,9 +9,14 @@ export const valueIsNumber = (obj,key) => {
     return true
 }
 
+export const isString = (s) =>{
+    if(typeof s === 'string'){return true}
+    throw new TypeError("not a string!")
+}
+
 export const isNumber = (n) =>{
 if(typeof n === "number"){return true}
-throw TypeError("not a number!")
+throw new TypeError("not a number!")
 }
 
 export const dateStringIsValid = (str) => {

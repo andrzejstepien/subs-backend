@@ -2,7 +2,7 @@ import express from "express"
 import pinoHTTP from 'pino-http'
 import logger from "./logger.mjs";
 import bodyParser from "body-parser";
-import { newStory } from "./postCalls.mjs";
+import { newStory, editStory } from './apiObjects/Story.mjs'
 import cors from "cors";
 import { getIdsTable, selectFull, getFormOptions, selectEntityGenres, selectAllEntityGenres, selectCleanArray, getStoriesPageData, getSingleStoryPageData, getPublicationsPageData } from "./selectCalls.mjs";
 import { editSubmission, newSubmission } from "./apiObjects/Submission.mjs";
@@ -135,7 +135,7 @@ app.get('/api/page/single-story', async (req,res) => {
 
 
 
-app.post('/api/story', async (req, res) => {
+app.post('/api/story/new', async (req, res) => {
   logger.info("add story request received!")
   res.statusCode = 200
   const data = req.body
@@ -145,6 +145,25 @@ app.post('/api/story', async (req, res) => {
     logger.info({ result }, "INSERTION SUCCESSFUL")
   } catch (error) {
     logger.error(error)
+  }
+})
+app.post('/api/story/edit', async (req, res) => {
+  const data = req.body
+  logger.info({data},"edit story request received!")
+  res.statusCode = 200
+  try {
+    const result = await editStory(db, data)
+    logger.info({ result }, "EDIT SUCCESSFUL")
+    res.sendStatus(200)
+  } catch (error) {
+    logger.error(error)
+    if(error instanceof TypeError){
+      res.sendStatus(400)
+    } else {
+      res.sendStatus(500)
+    }
+    
+    
   }
 })
 app.post('/api/submission/edit', async (req,res)=>{
