@@ -153,7 +153,7 @@ app.post('/api/submission/edit', async (req,res)=>{
     await editSubmission(db,req.body)
     res.sendStatus(200)
   } catch (error) {
-    if(error instanceof TypeError){
+    if(error instanceof Error || error instanceof TypeError){
       res.sendStatus(400)
     }else{res.sendStatus(500)}
   }
@@ -165,7 +165,7 @@ app.post('/api/submission/new', async (req,res) => {
      res.sendStatus(200)
   } catch (error) {
     logger.error(error)
-    if(error instanceof Error){
+    if(error instanceof Error || error instanceof TypeError){
       res.sendStatus(400)
     }else{res.sendStatus(500)}
   }
