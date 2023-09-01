@@ -1,16 +1,21 @@
 import { testDb as db } from "../db.mjs";
 import { expect } from "chai";
+import chai from "chai";
 import { describe } from "mocha";
 import deleteFromDB from "../deleteFromDB.mjs";
+import chaiAsPromised from "chai-as-promised";
+chai.use(chaiAsPromised)
+
 
 describe("Testing delete calls..",()=>{
     describe("testing deleteFromDB",async ()=>{
         it("it should delete from 'stories' when passed an id that exists", async ()=>{
-            const id = await db('stories')
+            let id = await db('stories')
             .insert({title:'Test',word_count:0})
             .returning('id')
             console.log("id:"+id)
-            const res = await deleteFromDB(db,'stories',id[0].id)
+            id=id[0].id
+            const res = await deleteFromDB(db,'stories',id)
             expect(res).to.equal(1)
             
         })
@@ -18,6 +23,9 @@ describe("Testing delete calls..",()=>{
             const res = await deleteFromDB(db,'stories',9999999999999)
             expect(res).to.equal(0)
             
+        })
+        it("it should throw when an id that is not a number", async ()=>{
+            return expect(deleteFromDB(db,'stories',undefined)).to.be.rejectedWith(Error)
         })
     })
 })

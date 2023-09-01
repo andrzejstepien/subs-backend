@@ -5,8 +5,13 @@ export const keyExists = (obj,key)=>{
     throw new Error(`missing key: ${key}`,{cause:{key},obj})
 }
 export const valueIsNumber = (obj,key) => {
-    if(typeof obj?.[key] != "number"){throw new TypeError("not a number",{cause:{key},obj})}
+    if(typeof obj?.[key] != "number"){throw new TypeError(`${obj[key]} is not a number`,{cause:{key},obj})}
     return true
+}
+
+export const isNumber = (n) =>{
+if(typeof n === "number"){return true}
+throw TypeError("not a number!")
 }
 
 export const dateStringIsValid = (str) => {

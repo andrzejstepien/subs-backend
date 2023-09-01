@@ -6,7 +6,7 @@ import { newStory } from "./postCalls.mjs";
 import cors from "cors";
 import { getIdsTable, selectFull, getFormOptions, selectEntityGenres, selectAllEntityGenres, selectCleanArray, getStoriesPageData, getSingleStoryPageData, getPublicationsPageData } from "./selectCalls.mjs";
 import { editSubmission, newSubmission } from "./apiObjects/Submission.mjs";
-import start from "./start.mjs";
+import deleteFromDB from "./deleteFromDB.mjs";
 import { db } from "./db.mjs";
 
 const app = express()
@@ -171,9 +171,26 @@ app.post('/api/submission/new', async (req,res) => {
   }
 })
 
+app.delete('/api/submission/delete', async (req,res) => {
+  const data = req.body
+  logger.info({data},"submission delete request received")
+  try {
+    const res = await deleteFromDB(db,'subs',data.id)
+    if(res===1){
+      res.sendStatus(200)
+    }else{
+      res.statusCode=400
+      res.send()
+    }
+  } catch (error) {
+    logger.error(error)
+    if(error instanceof TypeError){
+      res.sendStatus(400)
+    }else{res.sendStatus(500)}
+  }
+})
 
 
-start(db)
 app.listen(port, (err) => {
   if (err) logger.error(err);
   logger.info("Server listening on PORT " + port)
