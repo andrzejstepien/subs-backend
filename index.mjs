@@ -209,6 +209,24 @@ app.delete('/api/submission/delete', async (req,res) => {
     }else{res.sendStatus(500)}
   }
 })
+app.delete('/api/story/delete', async (req,res) => {
+  const data = req.body
+  logger.info({data},"story delete request received")
+  try {
+    const res = await deleteFromDB(db,'stories',data.id)
+    if(res===1){
+      res.sendStatus(200)
+    }else{
+      res.statusCode=400
+      res.send()
+    }
+  } catch (error) {
+    logger.error(error)
+    if(error instanceof TypeError){
+      res.sendStatus(400)
+    }else{res.sendStatus(500)}
+  }
+})
 
 
 app.listen(port, (err) => {
