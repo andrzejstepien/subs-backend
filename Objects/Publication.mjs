@@ -1,6 +1,6 @@
-import { Entity } from "./Entity.mjs";
 import logger from "../logger.mjs";
 import express from "express";
+import { Entity } from "./Entity.mjs";
 
 export class Publication extends Entity {
     constructor(data) {
@@ -16,8 +16,6 @@ export class Publication extends Entity {
                 this.query_after_days = queryAfter
             } else { throw new TypeError("Publication.query_after_days must be a number!")}
         }
-        
-        
     }
     
    get table(){
