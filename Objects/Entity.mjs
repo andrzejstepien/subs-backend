@@ -1,6 +1,5 @@
 import { DateTime } from "luxon"
-
-
+import logger from "../logger.mjs"
 export class Entity extends Object {
     
     constructor(data) {
@@ -11,9 +10,12 @@ export class Entity extends Object {
                 this.id=id
             } else { throw new TypeError("id must be a number")}
         }
-        if (this.isString(data?.title)) {
-            this.title = data.title
-        } else { throw new TypeError("title must be a string!") }
+        if(data?.title){
+            if (this.isString(data?.title)) {
+                this.title = data.title
+            } else { throw new TypeError("title must be a string!") }
+        }
+        
     }
 
 
@@ -25,7 +27,6 @@ export class Entity extends Object {
                 return res===1
     }
     async create (db){
-        console.log("table: "+this.table)
         const res = await db(this.table)
         .insert(this)
         .returning('id')
@@ -56,5 +57,19 @@ export class Entity extends Object {
         return false
     }
 
+static async endpoint(db,assignment,method,res){
+        try {
+            const entity = assignment()
+            await entity[method](db)
+            res.sendStatus(200)
+        } catch (error) {
+            logger.error(error)
+            if(error instanceof TypeError){
+                res.sendStatus(400)
+            }else{
+                res.sendStatus(500)
+            }
+        }
+   }
 }
 
