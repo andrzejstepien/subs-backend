@@ -31,6 +31,11 @@ export default class Entity {
         return false
     }
 
+    get idColName(){
+        if(!this.singular){throw new Error("can't give colname for entity with no .singular!")}
+        return this.singular+'_id'
+    }
+
     async del(db) {
         if(!this?.id){throw new Error("cannot delete entity without id!")}
             const res = await db(this.table)
@@ -39,7 +44,8 @@ export default class Entity {
                 return res===1
     }
     async create (db){
-        const res = await db(this.table)
+        try {
+            const res = await db(this.table)
         .insert(this)
         .returning('id')
          if(res===0){
@@ -54,6 +60,10 @@ export default class Entity {
         await genres.deleteForEntity(db,this)
         const res2 = await genres.update(db,this)
         return res2===0?false:true
+        } catch (error) {
+            logger.error(error)
+        }
+        
 
     }
     async edit(db){
@@ -105,10 +115,12 @@ export default class Entity {
         return objValue && typeof objValue === 'object' && objValue.constructor === Object;
       }
 
-static async endpoint(db,assignment,method,res){
+    static async endpoint(db,assignment,method,res){
         try {
-            const entity = assignment()
+            const entity = await assignment()
             await entity[method](db)
+            res.statusCode=200
+            //logger.fatal({output},'Sending to client...')
             res.sendStatus(200)
         } catch (error) {
             logger.error(error)
@@ -119,5 +131,22 @@ static async endpoint(db,assignment,method,res){
             }
         }
    }
+   static async getEndpoint(db,assignment,method,res){
+    try {
+        const output = await assignment()
+        res.statusCode=200
+        //logger.fatal({output},'Sending to client...')
+        res.send(output)
+    } catch (error) {
+        logger.error(error)
+        if(error instanceof TypeError){
+            res.sendStatus(400)
+        }else{
+            res.sendStatus(500)
+        }
+    }
+}
+ 
+    
 }
 

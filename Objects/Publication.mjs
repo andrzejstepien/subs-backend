@@ -1,6 +1,8 @@
 import logger from "../logger.mjs";
 import express from "express";
 import Entity from "./Entity.mjs";
+import Submission from "./Submission.mjs";
+import Genres from "./Genres.mjs";
 
 export default class Publication extends Entity {
     constructor(data) {
@@ -18,6 +20,17 @@ export default class Publication extends Entity {
         }
     }
     
+   static async view(db){
+        const data = await db('pubs')
+        .select('id as ID','title as Title', 'link as Website')
+        const genres = await Genres.init(db)
+        return Promise.all(data.map(async row=>{
+            row.Submissions = await Submission.submissionsById(db,'pub_id',row.ID)
+            row.Genres = genres.genreNamesForEntityId('pubs_genres','pub_id',row.ID)
+            return row
+        }))
+    }
+
    get table(){
     return 'pubs'
    }
@@ -27,6 +40,10 @@ export default class Publication extends Entity {
 
    static endpoints(db){
     const router = express.Router()
+    router.get('/publication/view', async (req,res)=>{
+        logger.trace({ data: req.body }, '/publication/view')
+        this.getEndpoint(db, () =>{ return Publication.view(db)}, 'view', res)
+    })
     router.post('/publication/edit',async (req,res)=>{
         logger.trace({data:req.body},'/publication/edit')
         this.endpoint(db,()=>{return new Publication(req.body)},'edit',res)

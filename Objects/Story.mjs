@@ -21,19 +21,25 @@ export default class Story extends Entity {
         return 'story'
     }
 
-    static async getPageData(db) {
-        const storiesData = await db('stories')
+     static async view(db) {
+        const data = await db('stories')
             .select('id as ID', 'title as Title', 'word_count as Wordcount')
-        const genres = Genres.init(db)
-        return Promise.all(storiesData.map(async row=>{
-            row.Submissions = await Submission.submissionsByEntity(this)
-            row.Genres = genres.
-        }))
-       
+        const genres = await Genres.init(db)
+        
+        return Promise.all(data.map(async row=>{
+            row.Submissions = await Submission.submissionsById(db,'story_id',row.ID)
+            row.Genres = genres.genreNamesForEntityId('stories_genres','story_id',row.ID)
+            return row
+        }
+        ))
     }
 
     static endpoints(db) {
         const router = express.Router()
+        router.get('/story/view', async (req,res)=>{
+            logger.trace({ data: req.body }, '/story/view')
+            this.getEndpoint(db, ()=>{ return Story.view(db)}, 'view', res)
+        })
         router.post('/story/edit', async (req, res) => {
             logger.trace({ data: req.body }, '/story/edit')
             this.endpoint(db, () => { return new Story(req.body) }, 'edit', res)
@@ -48,4 +54,6 @@ export default class Story extends Entity {
         })
         return router
     }
-}
+
+
+}   

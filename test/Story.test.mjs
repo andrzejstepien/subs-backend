@@ -130,10 +130,14 @@ describe("testing Story object", function () {
             expect(story.getSubmissions()).to.eventually.throw()
         })
     })
-    describe("static getPageData()",async function(){
+    describe("static view()",async function(){
         it("should return an array",async function(){
-            //const res = await Story.getPageData(db)
-            //expect(res).to.be.a('array')
+            const story = new Story({id:1})
+            console.log(story.idColName)
+            console.log(Story.idColName)
+            const res = await Story.view(db)
+            console.dir(res)
+            expect(res).to.be.a('array')
         })
     })
 })

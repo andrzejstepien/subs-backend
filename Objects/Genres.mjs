@@ -30,28 +30,35 @@ export default class Genres{
             })
     }
     idsForEntity(entity){
-        const idCol = this.tableName(entity)
+        const tab = this.tableName(entity)
+        const idCol = entity.idColName
         const output = []
-        for (const pair of this.stories_genres) {
-            if(pair.story_id===entity.id){output.push(pair.genre_id)}
+        for (const pair of this[tab]) {
+            if(pair[idCol]===entity.id){output.push(pair.genre_id)}
         }
         return output
     }
+     genreNamesForEntityId(tab,idCol,id){
+        const output = []
+        for (const pair of this[tab]) {
+            if(pair[idCol]===id){output.push(pair.genre_id)}
+        }
+        return output
+    }
+
 
     names(){
        return Object.keys(this.genres) 
     }
 
-    idColName(entity){
-        return entity.singular+'_id'
-    }
+
     tableName(entity){
         return entity.table+'_genres'
     }
 
     async update(db,entity){
         const table = entity.table+"_genres"
-        const entityId = this.idColName(entity)
+        const entityId = entity.idColName
         const array = []
         for (const key in entity.genres) {
             if(entity.genres[key]){
@@ -68,7 +75,7 @@ export default class Genres{
     }
     async deleteForEntity(db,entity){
         const table = this.tableName(entity)
-        const col = this.idColName(entity)
+        const col = entity.idColName
         return db(table)
         .where(col,entity.id)
         .del()

@@ -4,6 +4,7 @@ import { describe, afterEach, beforeEach, after } from "mocha";
 import { testDb as db } from "../db.mjs";
 import chaiAsPromised from "chai-as-promised";
 import  Submission  from "../Objects/Submission.mjs";
+import Story from "../Objects/Story.mjs";
 chai.use(chaiAsPromised)
 describe("testing Submission object", function () {
     const goodData = {
@@ -111,6 +112,14 @@ describe("testing Submission object", function () {
             const sub = new Submission(goodData)
             const res = await sub.getColumn(db,'story_id')
             expect(res[0]).to.be.a('number')
+        })
+    })
+    describe("submissionsById",async function(){
+        it("should return an array of length > 1 when passed a valid story object",async function(){
+            
+            const res = await Story.view(db)
+            expect(res).to.be.a('array')
+            expect(res).to.have.lengthOf.greaterThan(1)
         })
     })
 })
