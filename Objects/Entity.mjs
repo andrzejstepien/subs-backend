@@ -1,6 +1,6 @@
 import { DateTime } from "luxon"
 import logger from "../logger.mjs"
-//import Genres from "./Genres.mjs"
+import Genres from "./Genres.mjs"
 export default class Entity {
     #genres
     constructor(data) {

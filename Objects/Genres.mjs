@@ -1,7 +1,6 @@
 import logger from "../logger.mjs";
-import Entity from "./Entity.mjs";
-import Story from "./Story.mjs";
-import Publication from "./Publication.mjs";
+
+
 export default class Genres{
     constructor(data){
         this.stories_genres=data.stories_genres
@@ -30,31 +29,24 @@ export default class Genres{
                 genres
             })
     }
-    idsForStory(id){
+    idsForEntity(entity){
+        const idCol = this.tableName(entity)
         const output = []
         for (const pair of this.stories_genres) {
-            if(pair.story_id===id){output.push(pair.genre_id)}
+            if(pair.story_id===entity.id){output.push(pair.genre_id)}
         }
         return output
     }
-    idsForPub(id){
-        const output = []
-        for (const pair of this.pubs_genres) {
-            if(pair.pub_id===id){output.push(pair.genre_id)}
-        }
-        return output
-    }
+
     names(){
        return Object.keys(this.genres) 
     }
 
     idColName(entity){
-        if(entity instanceof Story){
-            return 'story_id'
-        }
-        if(entity instanceof Publication){
-            return 'pub_id'
-        }
+        return entity.singular+'_id'
+    }
+    tableName(entity){
+        return entity.table+'_genres'
     }
 
     async update(db,entity){
@@ -75,9 +67,8 @@ export default class Genres{
         .insert(array)
     }
     async deleteForEntity(db,entity){
-        const table = entity.table+"_genres"
+        const table = this.tableName(entity)
         const col = this.idColName(entity)
-        console.log(col)
         return db(table)
         .where(col,entity.id)
         .del()

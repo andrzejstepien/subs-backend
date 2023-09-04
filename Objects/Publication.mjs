@@ -21,6 +21,9 @@ export default class Publication extends Entity {
    get table(){
     return 'pubs'
    }
+   get singular(){
+    return 'pub'
+   }
 
    static endpoints(db){
     const router = express.Router()

@@ -18,20 +18,21 @@ describe("testing Genres object",function(){
         it("should have the keys stories_genres,pubs_genres, and genres",async function(){
             const genres = await Genres.init(db)
             const array = ['stories_genres','pubs_genres','genres']
-            console.dir(genres)
             expect(Object.keys(genres).every(key=>array.includes(key))).to.equal(true)
         })
-        it("genres.idsForStory should return a string of integers",async function(){
+        it("genres.idsEntity should return a string of integers",async function(){
             const genres = await Genres.init(db)
-            expect(genres.idsForStory(1)).to.be.a('array')
-            for (const id of genres.idsForStory(1)) {
+            const story = new Story({id:1})
+            expect(genres.idsForEntity(story)).to.be.a('array')
+            for (const id of genres.idsForEntity(story)) {
                 expect(id).to.be.a('number')
             }
         })
-        it("genres.idsForPubshould return a string of integers",async function(){
+        it("genres.idsForEntity return a string of integers",async function(){
+            const pub = new Publication({id:1})
             const genres = await Genres.init(db)
-            expect(genres.idsForPub(1)).to.be.a('array')
-            for (const id of genres.idsForPub(1)) {
+            expect(genres.idsForEntity(pub)).to.be.a('array')
+            for (const id of genres.idsForEntity(pub)) {
                 expect(id).to.be.a('number')
             }
         })

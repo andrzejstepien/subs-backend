@@ -115,7 +115,6 @@ describe("testing Story object", function () {
         it("the titles array[0] should be a strings",async function(){
             const story = new Story(goodData)
             const res = await story.getColumn(db,'title')
-            console.log(typeof res[0])
             expect(res[0]).to.be.a('string')
         })
     })

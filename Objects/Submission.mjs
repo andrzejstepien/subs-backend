@@ -34,6 +34,15 @@ export default class Submission extends Entity {
     get table() {
         return 'subs'
     }
+    idColName(entity){
+        return entity.singular+'_id'
+    }
+    static async submissionsByEntity(db,entity){
+        const idCol = idColName(entity)
+        return db('submissions')
+        .where(idCol,entity.id)
+        
+    }
     static endpoints(db) {
         const router = express.Router()
         router.post('/submission/edit', async (req, res) => {

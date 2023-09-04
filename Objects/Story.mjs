@@ -1,6 +1,8 @@
 import express from "express";
 import logger from "../logger.mjs";
 import Entity from "./Entity.mjs";
+import Genres from "./Genres.mjs";
+import Submission from "./Submission.mjs";
 export default class Story extends Entity {
     constructor(data) {
         super(data)
@@ -15,9 +17,18 @@ export default class Story extends Entity {
         return 'stories'
     }
 
+    get singular(){
+        return 'story'
+    }
+
     static async getPageData(db) {
         const storiesData = await db('stories')
             .select('id as ID', 'title as Title', 'word_count as Wordcount')
+        const genres = Genres.init(db)
+        return Promise.all(storiesData.map(async row=>{
+            row.Submissions = await Submission.submissionsByEntity(this)
+            row.Genres = genres.
+        }))
        
     }
 

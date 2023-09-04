@@ -110,7 +110,6 @@ describe("testing Submission object", function () {
         it("the story_id array[0] should be a number",async function(){
             const sub = new Submission(goodData)
             const res = await sub.getColumn(db,'story_id')
-            console.log(typeof res[0])
             expect(res[0]).to.be.a('number')
         })
     })
