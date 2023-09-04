@@ -1,6 +1,7 @@
 import { DateTime } from "luxon"
 import logger from "../logger.mjs"
-export class Entity {
+//import Genres from "./Genres.mjs"
+export default class Entity {
     #genres
     constructor(data) {
         
@@ -22,22 +23,7 @@ export class Entity {
         }
         
     }
-    static async genreIds(db,entity){ //entity.genres:{horror:true, fantasy:false,}
-        if(!entity.genres){return false}
-        const dbGenres = await db('genres')//[{id:1,name:horror},{id:2,name:fantasy}...]
-        .select('*') 
-        const genreTable = {}
-        for (const genre of dbGenres) {
-            genreTable[genre.name]=genre.id
-        }
-        const output = []
-        for (const key in entity.genres) {
-            if(entity.genres[key]){
-                output.push(genreTable[key])
-            }
-        }
-        return output   
-    }
+   
     get genres(){
         if(this.#genres){
             return this.#genres
@@ -56,32 +42,17 @@ export class Entity {
         const res = await db(this.table)
         .insert(this)
         .returning('id')
-        console.dir(res)
          if(res===0){
             logger.trace("res===0, returning false")
             return false
         }
         const newId = res[0].id
-        console.dir(this.genres)
          if(!this.genres){
             logger.trace("no genre data, returning newId: "+newId)
             return newId}
-        const genresTable = this.table+'_genres'
-        const idName = this.table==='stories'?'story_id':this.table==='pubs'?'pub_id':null
-        const array = []
-        for (const genreId of await Entity.genreIds(db,this)) {
-            array.push({
-                [idName]:newId,
-                genre_id:genreId
-            })
-        }
-        console.dir(array)
-        await db(genresTable)
-        .where(idName,newId)
-        .del()
-        const res2 = await db(genresTable)
-        .insert(array)
-        console.dir(res2)
+        const genres = await Genres.init(db)
+        await genres.deleteForEntity(db,this)
+        const res2 = await genres.update(db,this)
         return res2===0?false:true
 
     }
@@ -92,7 +63,25 @@ export class Entity {
         .update(this)
         return res===1
     }
-
+    async getTable(db,tab){
+        return db(tab??this.table)
+        .select('*')
+    }
+    async getColumn(db,col,tab){
+        const res = await db(tab??this.table)
+        .select(col)
+        return res.map(e=>{
+            return e[Object.keys(e)[0]]
+        }) 
+    }
+    async getSubmissions(db,id){
+        if(!this?.table){return this}
+        if(!this.id){throw new Error("can't get submissions without an id!")}
+        const useId = id?id:this.id
+        const idName = this.table==='stories'?'story_id':this.table==='pubs'?'pub_id':null
+        return db('submissions')
+        .where(idName,useId)
+    }
     
   
 

@@ -1,8 +1,7 @@
-import { Entity } from "./Entity.mjs"
 import express from "express";
 import logger from "../logger.mjs";
-
-export class Story extends Entity {
+import Entity from "./Entity.mjs";
+export default class Story extends Entity {
     constructor(data) {
         super(data)
         if (data?.word_count) {
@@ -15,6 +14,13 @@ export class Story extends Entity {
     get table() {
         return 'stories'
     }
+
+    static async getPageData(db) {
+        const storiesData = await db('stories')
+            .select('id as ID', 'title as Title', 'word_count as Wordcount')
+       
+    }
+
     static endpoints(db) {
         const router = express.Router()
         router.post('/story/edit', async (req, res) => {

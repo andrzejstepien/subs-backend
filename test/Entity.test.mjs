@@ -1,11 +1,13 @@
 import { expect } from "chai";
 import chai from "chai";
+import chaiEach from "chai-each";
+import { use } from "chai";
 import { describe, afterEach, beforeEach, after } from "mocha";
 import { testDb as db } from "../db.mjs";
 import chaiAsPromised from "chai-as-promised";
-import { Entity } from "../Objects/Entity.mjs";
-import { Story } from "../Objects/Story.mjs";
+import Entity from "../Objects/Entity.mjs";
 chai.use(chaiAsPromised)
+chai.use(chaiEach)
 describe("Entity class",function(){
    const goodData = {
         id:1,
@@ -35,18 +37,42 @@ describe("Entity class",function(){
             })
             
         })
-        describe("static genreIdPairs()",async function(){
-            it("should return an array when passed a valid Entity",async function(){
+        describe("table()", function(){
+            it("should return an array when passed 'stories' table ref",async function(){
                 const entity = new Entity(goodData)
-                return expect(Entity.genreIds(db,entity)).to.eventually.be.a('array')
+                const res = await entity.getTable(db,'stories')
+                expect(res).to.be.a('array')
             })
-            it("should return array of correct ids  when passed a Story with genre data", function(){
-                const story = new Story(goodData)
-                return expect(Entity.genreIds(db,story)).to.eventually.eql([1,2])
+            it("should return an array of >=5 when passed 'stories' table ref",async function(){
+                const entity = new Entity(goodData)
+                const res = await entity.getTable(db,'stories')
+                expect(res.length).to.be.greaterThanOrEqual(5)
             })
-            it("should return false if there is no genre data", function(){
-                const entity = new Entity({id:1})
-                return expect(Entity.genreIds(db,entity)).to.eventually.equal(false)
+            it("each object of the array should have the key .title",async function(){
+                const entity = new Entity(goodData)
+                const res = await entity.getTable(db,'stories')
+                expect(
+                    res.every(e=>{return e?.title})
+                ).to.equal(true)
+            })
+        })
+        describe("getColumn()",function(){
+            it("should return an array",async function(){
+                const entity = new Entity(goodData)
+                const res = await entity.getColumn(db,'title','pubs')
+                expect(res).to.be.a('array')
+            })
+            it("the pubs.titles array[0] should be a strings",async function(){
+                const entity = new Entity(goodData)
+                const res = await entity.getColumn(db,'title','pubs')
+                console.log(typeof res[0])
+                expect(res[0]).to.be.a('string')
+            })
+        })
+        describe("getSubmissions()",async function(){
+            it("should return itself", async function(){
+                const entity = new Entity(goodData)
+                return expect(entity.getSubmissions(db)).to.eventually.equal(entity)
             })
         })
     })

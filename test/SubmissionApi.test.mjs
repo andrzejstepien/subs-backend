@@ -3,7 +3,7 @@ import chai from "chai";
 import { describe, afterEach, beforeEach, after } from "mocha";
 import { testDb as db } from "../db.mjs";
 import chaiAsPromised from "chai-as-promised";
-import { Submission } from "../Objects/Submission.mjs";
+import Submission from "../Objects/Submission.mjs";
 import chaiHttp from "chai-http";
 import express from "express";
 import bodyParser from "body-parser";

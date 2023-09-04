@@ -3,7 +3,7 @@ import chai from "chai";
 import { describe, afterEach, beforeEach, after } from "mocha";
 import { testDb as db } from "../db.mjs";
 import chaiAsPromised from "chai-as-promised";
-import { Publication } from "../Objects/Publication.mjs";
+import  Publication  from "../Objects/Publication.mjs";
 chai.use(chaiAsPromised)
 describe("testing Publication object", function () {
     const goodData = {
@@ -78,6 +78,50 @@ describe("testing Publication object", function () {
         it("should throw if not given id", function(){
             const pub = new Publication(goodData)
             return expect(pub.edit(db)).to.be.rejectedWith(Error)
+        })
+    })
+    describe("getTable()", function(){
+        it("should return an array",async function(){
+            const pub = new Publication(goodData)
+            const res = await pub.getTable(db)
+            expect(res).to.be.a('array')
+        })
+        it("should return an array of >=5",async function(){
+            const pub = new Publication(goodData)
+            const res = await pub.getTable(db)
+            expect(res.length).to.be.greaterThanOrEqual(5)
+        })
+        it("each object of the array should have the key .title",async function(){
+            const pub = new Publication(goodData)
+            const res = await pub.getTable(db)
+            expect(
+                res.every(e=>{return e?.title})
+            ).to.equal(true)
+        })
+    })
+    describe("getColumn()",function(){
+        it("should return an array",async function(){
+            const pub = new Publication(goodData)
+            const res = await pub.getColumn(db,'title')
+            expect(res).to.be.a('array')
+        })
+        it("the titles array[0] should be a strings",async function(){
+            const pub = new Publication(goodData)
+            const res = await pub.getColumn(db,'title')
+            console.log(typeof res[0])
+            expect(res[0]).to.be.a('string')
+        })
+    })
+    describe("getSubmissions()",async function(){
+        it("should return an array", async function(){
+            const data = {id:1}
+            const pub = new Publication(data)
+            const res = await pub.getSubmissions(db)
+            expect(res).to.be.a('array')
+        })
+        it("should throw if no id",async function(){
+            const pub = new Publication(goodData)
+            expect(pub.getSubmissions()).to.eventually.throw()
         })
     })
 })

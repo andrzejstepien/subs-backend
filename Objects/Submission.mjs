@@ -1,8 +1,8 @@
-import { Entity } from "./Entity.mjs"
+import Entity  from "./Entity.mjs"
 import express from "express";
 import logger from "../logger.mjs";
 
-export class Submission extends Entity {
+export default class Submission extends Entity {
     constructor(data) {
         super(data)
         if (data?.story_id) {

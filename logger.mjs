@@ -16,7 +16,7 @@ const __dirname = path.dirname(__filename);
 // })
 export default pino(
     {
-      level: 'trace',
+      level: 'error',
       formatters: {
         level: (label) => {
           return { level: label.toUpperCase() };

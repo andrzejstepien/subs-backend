@@ -1,8 +1,8 @@
 import logger from "../logger.mjs";
 import express from "express";
-import { Entity } from "./Entity.mjs";
+import Entity from "./Entity.mjs";
 
-export class Publication extends Entity {
+export default class Publication extends Entity {
     constructor(data) {
         super(data)      
         if(data?.link){
