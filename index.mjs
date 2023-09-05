@@ -7,6 +7,7 @@ import Story from "./Objects/Story.mjs";
 import Publication from "./Objects/Publication.mjs";
 import Submission from "./Objects/Submission.mjs";
 import Genres from "./Objects/Genres.mjs";
+import Responses from "./Objects/Responses.mjs";
 import { db } from "./db.mjs";
 
 const app = express()
@@ -29,13 +30,31 @@ app.use('/api', Submission.endpoints(db))
 app.get('/api/form-options',async (rew,res)=>{
   try {
     const genres = await Genres.init(db)
+    const responses = await Responses(db) 
     const formOptions = {
       stories:await Story.list(db),
       publications:await Publication.list(db),
-      genres:genres.list.slice(1)
+      genres:genres.list.slice(1),
+      responses: responses.list
     }
     res.statusCode=200
     res.send(formOptions)
+  } catch (error) {
+    logger.error(error)
+    res.sendStatus(500)
+  }
+})
+app.get('/api/id-table',async (rew,res)=>{
+  try {
+    const genres = await Genres.init(db)
+    const responses = await Responses(db) 
+    const idTable = {
+      stories:await Story.idTable(db),
+      publications:await Publication.idTable(db),
+      responses: responses.table
+    }
+    res.statusCode=200
+    res.send(idTable)
   } catch (error) {
     logger.error(error)
     res.sendStatus(500)

@@ -68,6 +68,7 @@ export default class Entity {
 
     }
     async edit(db){
+        console.dir(this)
         if(!this?.id){throw new Error("cannot edit entity without id!")}
         const res = await db(this.table)
         .where('id',this.id)
@@ -95,8 +96,19 @@ export default class Entity {
     }
     
     static async list(db){
-        return db(this.table)
+        const data = await db(this.table)
         .select(this.nameCol)
+        return data.map(row=>{return row[this.nameCol]})
+    }
+
+    static async idTable(db){
+        const data = await db(this.table)
+        .select('id',this.nameCol)
+        const obj = {}
+        for (const row of data) {
+            obj[row[this.nameCol]]=row.id
+        }
+        return obj
     }
   
 

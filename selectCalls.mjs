@@ -133,7 +133,7 @@ export const getIdsTable = async (db) => {
     }
     const responses = await selectFull(db,'responses')
     for (const row of responses) {
-        response[row.response]=row.id
+        responses[row.response]=row.id
     }
     return{
         story,

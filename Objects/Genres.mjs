@@ -77,6 +77,7 @@ export default class Genres{
         .insert(array)
     }
     async deleteForEntity(db,entity){
+        if(!entity?.id){return false}
         const table = this.tableName(entity)
         const col = entity.idColName
         return db(table)
