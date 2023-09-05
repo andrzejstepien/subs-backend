@@ -137,4 +137,10 @@ describe("testing Story object", function () {
             expect(res).to.be.a('array')
         })
     })
+    describe("list()", async function(){
+        it("should return an array", async function(){
+            const res = await Story.list(db)
+            expect(res).to.be.a('array')
+        })
+    })
 })

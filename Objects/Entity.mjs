@@ -94,6 +94,10 @@ export default class Entity {
         .where(idName,useId)
     }
     
+    static async list(db){
+        return db(this.table)
+        .select(this.nameCol)
+    }
   
 
     isNumber (n){
@@ -119,7 +123,6 @@ export default class Entity {
     static async endpoint(db,assignment,method,res){
         try {
             const entity = await assignment()
-            console.dir(entity)
             await entity[method](db)
             res.statusCode=200
             //logger.fatal({output},'Sending to client...')
@@ -137,7 +140,7 @@ export default class Entity {
     try {
         const output = await assignment()
         res.statusCode=200
-        logger.fatal(output)
+        logger.trace(output)
         res.send(output)
     } catch (error) {
         logger.error(error)

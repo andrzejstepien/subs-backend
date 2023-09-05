@@ -15,9 +15,9 @@ describe("testing Genres object",function(){
             const res = await Genres.init(db)
             expect(res).to.be.a('object')
         })
-        it("should have the keys stories_genres,pubs_genres, and genres",async function(){
+        it("should have the keys stories_genres,pubs_genres, and list",async function(){
             const genres = await Genres.init(db)
-            const array = ['stories_genres','pubs_genres','genres']
+            const array = ['stories_genres','pubs_genres','list']
             expect(Object.keys(genres).every(key=>array.includes(key))).to.equal(true)
         })
         it("genres.idsEntity should return a string of integers",async function(){

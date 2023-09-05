@@ -122,5 +122,11 @@ describe("testing Publication object", function () {
             const pub = new Publication(goodData)
             expect(pub.getSubmissions()).to.eventually.throw()
         })
+        describe("list()", async function(){
+            it("should return an array", async function(){
+                const res = await Publication.list(db)
+                expect(res).to.be.a('array')
+            })
+        })
     })
 })

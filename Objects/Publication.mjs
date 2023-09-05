@@ -34,9 +34,12 @@ export default class Publication extends Entity {
    get table(){
     return 'pubs'
    }
+   static table = 'stories'
    get singular(){
     return 'pub'
    }
+   static nameCol = 'title'
+
 
    static apiPath = '/publication'
 

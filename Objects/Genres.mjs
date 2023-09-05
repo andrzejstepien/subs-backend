@@ -1,20 +1,19 @@
 import logger from "../logger.mjs";
 
-
 export default class Genres{
     constructor(data){
         this.stories_genres=data.stories_genres
         this.pubs_genres=data.pubs_genres
-        this.genres=[]
+        this.list=[]
         for (const row of data.genres) {
-            const diff = row.id - this.genres.length
+            const diff = row.id - this.list.length
             for (let index = 0; index < diff; index++) {
-                this.genres.push('')    
+                this.list.push('')    
             }
-            this.genres.push(row.name)   
+            this.list.push(row.name)   
         }
     }
-
+    
     static async init(db){
         const stories_genres = await (db)
         .select('*')
@@ -45,14 +44,14 @@ export default class Genres{
      genreNamesForEntityId(tab,idCol,id){
         const output = []
         for (const pair of this[tab]) {
-            if(pair[idCol]===id){output.push(this.genres[pair.genre_id])}
+            if(pair[idCol]===id){output.push(this.list[pair.genre_id])}
         }
         return output
     }
 
 
     names(){
-       return this.genres.slice(1)
+       return this.list.slice(1)
     }
 
 
@@ -69,7 +68,7 @@ export default class Genres{
                 array.push(
                     {
                         [entityId]:entity.id,
-                        genre_id:this.genres[key]
+                        genre_id:this.list[key]
                     }
                 )
             }

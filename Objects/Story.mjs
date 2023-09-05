@@ -16,11 +16,12 @@ export default class Story extends Entity {
     get table() {
         return 'stories'
     }
+    static table = 'stories'
 
     get singular(){
         return 'story'
     }
-    
+    static nameCol = 'title'
 
      static async view(db) {
         const data = await db('stories')

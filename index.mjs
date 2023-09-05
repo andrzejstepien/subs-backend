@@ -6,6 +6,7 @@ import cors from "cors";
 import Story from "./Objects/Story.mjs";
 import Publication from "./Objects/Publication.mjs";
 import Submission from "./Objects/Submission.mjs";
+import Genres from "./Objects/Genres.mjs";
 import { db } from "./db.mjs";
 
 const app = express()
@@ -24,6 +25,22 @@ app.use(
 app.use('/api', Publication.endpoints(db))
 app.use('/api', Story.endpoints(db))
 app.use('/api', Submission.endpoints(db))
+
+app.get('/api/form-options',async (rew,res)=>{
+  try {
+    const genres = await Genres.init(db)
+    const formOptions = {
+      stories:await Story.list(db),
+      publications:await Publication.list(db),
+      genres:genres.list.slice(1)
+    }
+    res.statusCode=200
+    res.send(formOptions)
+  } catch (error) {
+    logger.error(error)
+    res.sendStatus(500)
+  }
+})
 
 app.listen(port, (err) => {
   if (err) logger.error(err);
