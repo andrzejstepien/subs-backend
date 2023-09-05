@@ -65,7 +65,6 @@ describe("Entity class",function(){
             it("the pubs.titles array[0] should be a strings",async function(){
                 const entity = new Entity(goodData)
                 const res = await entity.getColumn(db,'title','pubs')
-                console.log(typeof res[0])
                 expect(res[0]).to.be.a('string')
             })
         })

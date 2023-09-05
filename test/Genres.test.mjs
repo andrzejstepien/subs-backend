@@ -47,6 +47,10 @@ describe("testing Genres object",function(){
             const genres = await Genres.init(db) 
             expect(genres.names().includes('horror')).to.equal(true)
         })
+        it("should include no empty strings", async function(){
+            const genres = await Genres.init(db) 
+            expect(genres.names().includes('')).to.equal(false)
+        })
         describe("testing delete functions",async function(){
             it("deleteForEntity() should successfully delete all entries when passed a story object",async function(){
                 const story = new Story({id:1})

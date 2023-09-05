@@ -106,6 +106,18 @@ describe("testing Story endpoints", function () {
                 .send(badData)
             expect(res).to.have.status(400)
         })
+        it("should update the db with correct data",async function(){
+            await chai.request(app)
+            .post('/api/story/create')
+            .send(goodData)
+            let res = await db('stories')
+            .select('*')
+            .where('title',goodData.title)
+            res = res[0]
+            expect(res.title).to.eql(goodData.title)
+            expect(res.word_count).to.eql(goodData.word_count)
+            
+        })
     })
     describe("/delete", function(){
         let id = null
@@ -124,5 +136,58 @@ describe("testing Story endpoints", function () {
             .send(id)
             expect(res).to.have.status(200)
         })
+    })
+    describe("/view",async function(){
+        it("should return an array",async function(){
+            const res = await chai.request(app)
+            .get('/api/story/view')
+            expect(res.body).to.be.a('array')
+        })
+        it("each object in the array should include .Title",async function(){
+            const res = await chai.request(app)
+            .get('/api/story/view')
+            for (const row of res.body) {
+                const keys = Object.keys(row)
+                expect(keys.includes('Title')).to.eql(true)
+            }
+            
+        }) 
+        it("each object in the array should include ID",async function(){
+            const res = await chai.request(app)
+            .get('/api/story/view')
+            for (const row of res.body) {
+                const keys = Object.keys(row)
+                expect(keys.includes('ID')).to.eql(true)
+            }
+            
+        }) 
+        it("each object in the array should include Wordcount",async function(){
+            const res = await chai.request(app)
+            .get('/api/story/view')
+            for (const row of res.body) {
+                const keys = Object.keys(row)
+                expect(keys.includes('Wordcount')).to.eql(true)
+            }
+            
+        })  
+        it("each object in the array should include Submissions",async function(){
+            const res = await chai.request(app)
+            .get('/api/story/view')
+            for (const row of res.body) {
+                const keys = Object.keys(row)
+                expect(keys.includes('Submissions')).to.eql(true)
+
+            }
+            
+        })  
+        it("each object in the array should include Genre",async function(){
+            const res = await chai.request(app)
+            .get('/api/story/view')
+            for (const row of res.body) {
+                const keys = Object.keys(row)
+                expect(keys.includes('Genres')).to.eql(true)
+            }
+        })  
+          
     })
 })

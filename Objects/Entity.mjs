@@ -1,6 +1,7 @@
 import { DateTime } from "luxon"
 import logger from "../logger.mjs"
 import Genres from "./Genres.mjs"
+import express from "express"
 export default class Entity {
     #genres
     constructor(data) {
@@ -118,6 +119,7 @@ export default class Entity {
     static async endpoint(db,assignment,method,res){
         try {
             const entity = await assignment()
+            console.dir(entity)
             await entity[method](db)
             res.statusCode=200
             //logger.fatal({output},'Sending to client...')
@@ -135,7 +137,7 @@ export default class Entity {
     try {
         const output = await assignment()
         res.statusCode=200
-        //logger.fatal({output},'Sending to client...')
+        logger.fatal(output)
         res.send(output)
     } catch (error) {
         logger.error(error)
@@ -146,7 +148,7 @@ export default class Entity {
         }
     }
 }
- 
+
     
 }
 

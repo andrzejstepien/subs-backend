@@ -20,6 +20,7 @@ export default class Story extends Entity {
     get singular(){
         return 'story'
     }
+    
 
      static async view(db) {
         const data = await db('stories')
@@ -33,6 +34,8 @@ export default class Story extends Entity {
         }
         ))
     }
+
+    static apiPath = '/story'
 
     static endpoints(db) {
         const router = express.Router()

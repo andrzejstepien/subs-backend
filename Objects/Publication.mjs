@@ -38,6 +38,8 @@ export default class Publication extends Entity {
     return 'pub'
    }
 
+   static apiPath = '/publication'
+
    static endpoints(db){
     const router = express.Router()
     router.get('/publication/view', async (req,res)=>{

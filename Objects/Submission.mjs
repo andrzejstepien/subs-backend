@@ -45,6 +45,8 @@ export default class Submission extends Entity {
         .where(idCol,id)
     }
 
+    static apiPath = '/submission'
+
     static endpoints(db) {
         const router = express.Router()
         router.get('/submission/view', async (req,res)=>{

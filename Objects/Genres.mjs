@@ -5,11 +5,14 @@ export default class Genres{
     constructor(data){
         this.stories_genres=data.stories_genres
         this.pubs_genres=data.pubs_genres
-        this.genres={}
-        for (const obj of data.genres) {
-            this.genres[obj.name]=obj.id
+        this.genres=[]
+        for (const row of data.genres) {
+            const diff = row.id - this.genres.length
+            for (let index = 0; index < diff; index++) {
+                this.genres.push('')    
+            }
+            this.genres.push(row.name)   
         }
-        
     }
 
     static async init(db){
@@ -22,6 +25,7 @@ export default class Genres{
         const genres = await (db)
         .select('*')
         .from('genres')
+        .orderBy('id')
         return new Genres(
             {
                 stories_genres,
@@ -41,14 +45,14 @@ export default class Genres{
      genreNamesForEntityId(tab,idCol,id){
         const output = []
         for (const pair of this[tab]) {
-            if(pair[idCol]===id){output.push(pair.genre_id)}
+            if(pair[idCol]===id){output.push(this.genres[pair.genre_id])}
         }
         return output
     }
 
 
     names(){
-       return Object.keys(this.genres) 
+       return this.genres.slice(1)
     }
 
 

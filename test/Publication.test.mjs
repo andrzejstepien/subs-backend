@@ -108,7 +108,6 @@ describe("testing Publication object", function () {
         it("the titles array[0] should be a strings",async function(){
             const pub = new Publication(goodData)
             const res = await pub.getColumn(db,'title')
-            console.log(typeof res[0])
             expect(res[0]).to.be.a('string')
         })
     })
